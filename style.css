@@ -1,0 +1,108 @@
+button {
+    background-color: rgb(243, 172, 41);
+    border-color: rgb(243, 172, 41);
+    border-radius: 0.5rem;
+    padding:0.5rem;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color:  rgb(252, 193, 85);
+}
+
+body{
+    background-color:  black;
+    color: white;
+}
+
+#title{
+    font-size: xx-large;
+    margin: 0;
+}
+
+#header{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 20rem;
+    margin-right: 20rem;
+    padding-left: 8rem;
+    padding-right: 8rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+}
+
+a{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+a:hover{
+    color: rgb(243, 172, 41);
+    cursor: pointer;
+}
+
+#intro{
+    background-color: rgb(54, 54, 54);
+    border-radius: 1rem;
+    margin:4rem;
+    padding: 2rem;
+
+}
+
+#outerbox{
+    display: flex;
+    padding-top: 2rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-bottom: 2rem;
+}
+
+#mugshot{
+    width: 50%;
+    height: 35rem;
+}
+
+.Icon{
+    height: 3rem;
+    width: 3rem;
+    display: inline-block;
+    transition: transform 0.2s ease, box-shadow 0.2 ease;
+}
+
+.Icon:hover{
+    transform: translateY(-0.25rem);
+    box-shadow: 0rem,1rem,2rem rgba(0,0,0,0.2);
+}
+
+#skills,#project,#learning{
+    font-size: 3rem;
+    font-weight: bolder;
+    color: #f3ac29;
+}
+
+.content{
+    display: flex;
+    height: fit-content;
+    flex-basis: 50%;
+}
+
+.innerContent{
+    background-color: rgb(54, 54, 54);
+    border-radius: 1rem;
+    margin:4rem;
+    padding: 2rem;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.heading{
+    margin-left: 4rem;
+}
+
+.contentHeading{
+    color: #f3ac29;
+    font-size: larger;
+}
+
+  
