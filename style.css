@@ -1,108 +1,286 @@
-button {
-    background-color: rgb(243, 172, 41);
-    border-color: rgb(243, 172, 41);
-    border-radius: 0.5rem;
-    padding:0.5rem;
+:root {
+  --green: #00FF41;
+  --green-dim: #00cc33;
+  --green-dark: #003300;
+  --amber: #f3ac29;
+  --bg: #000000;
+  --surface: #050f05;
 }
 
-button:hover{
-    cursor: pointer;
-    background-color:  rgb(252, 193, 85);
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--green);
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 14px;
+  height: 100vh;
+  overflow: hidden;
+  cursor: text;
 }
 
-body{
-    background-color:  black;
-    color: white;
+/* ── CRT Monitor Effect ─────────────────────────────── */
+#crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
 }
 
-#title{
-    font-size: xx-large;
-    margin: 0;
+/* Scanlines */
+#crt-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
 }
 
-#header{
-    display: flex;
-    justify-content: space-between;
-    margin-left: 20rem;
-    margin-right: 20rem;
-    padding-left: 8rem;
-    padding-right: 8rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
+/* Vignette */
+#crt-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
+  pointer-events: none;
 }
 
-a{
-    text-decoration: none;
-    color: rgb(255, 255, 255);
+/* ── Animations ─────────────────────────────────────── */
+@keyframes flicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.8; }
+  97% { opacity: 1; }
+  98% { opacity: 0.6; }
+  99% { opacity: 0.9; }
 }
 
-a:hover{
-    color: rgb(243, 172, 41);
-    cursor: pointer;
+body.flickering { animation: flicker 0.15s linear; }
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
-#intro{
-    background-color: rgb(54, 54, 54);
-    border-radius: 1rem;
-    margin:4rem;
-    padding: 2rem;
-
+/* ── Boot Screen ────────────────────────────────────── */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 50;
+  padding: 2rem;
+  overflow: hidden;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
 }
 
-#outerbox{
-    display: flex;
-    padding-top: 2rem;
-    padding-left: 4rem;
-    padding-right: 4rem;
-    padding-bottom: 2rem;
+.boot-line {
+  color: var(--green);
+  line-height: 1.6;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+  opacity: 0;
+  transition: opacity 0.1s;
 }
 
-#mugshot{
-    width: 50%;
-    height: 35rem;
+.boot-line.ok   { color: var(--green); }
+.boot-line.warn { color: var(--amber); }
+.boot-line.header { color: #fff; font-size: 11px; }
+
+#boot-ascii {
+  color: var(--green);
+  text-shadow: 0 0 12px rgba(0, 255, 65, 0.8);
+  font-size: 12px;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  white-space: pre;
 }
 
-.Icon{
-    height: 3rem;
-    width: 3rem;
-    display: inline-block;
-    transition: transform 0.2s ease, box-shadow 0.2 ease;
+/* ── Terminal Shell ─────────────────────────────────── */
+#terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
 }
 
-.Icon:hover{
-    transform: translateY(-0.25rem);
-    box-shadow: 0rem,1rem,2rem rgba(0,0,0,0.2);
+#terminal-header {
+  background: #050f05;
+  border-bottom: 1px solid #003300;
+  padding: 0.4rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--green-dim);
+  flex-shrink: 0;
 }
 
-#skills,#project,#learning{
-    font-size: 3rem;
-    font-weight: bolder;
-    color: #f3ac29;
+.header-title {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(0,255,65,0.5);
+  letter-spacing: 2px;
 }
 
-.content{
-    display: flex;
-    height: fit-content;
-    flex-basis: 50%;
+.header-right {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 11px;
 }
 
-.innerContent{
-    background-color: rgb(54, 54, 54);
-    border-radius: 1rem;
-    margin:4rem;
-    padding: 2rem;
-    padding-top: 0;
-    margin-top: 0;
+/* ── Output Area ────────────────────────────────────── */
+#output-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.2rem 0.5rem;
+  scroll-behavior: smooth;
+  line-height: 1.7;
 }
 
-.heading{
-    margin-left: 4rem;
+#output-area::-webkit-scrollbar       { width: 4px; }
+#output-area::-webkit-scrollbar-track { background: #000; }
+#output-area::-webkit-scrollbar-thumb { background: #003300; border-radius: 2px; }
+
+.output-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+  line-height: 1.6;
 }
 
-.contentHeading{
-    color: #f3ac29;
-    font-size: larger;
+.output-line.cmd    { color: var(--amber); text-shadow: 0 0 6px rgba(243, 172, 41, 0.4); }
+.output-line.err    { color: #ff4444;      text-shadow: 0 0 6px rgba(255, 68, 68, 0.4); }
+.output-line.info   { color: #aaffaa; }
+.output-line.accent { color: var(--amber); }
+.output-line.dim    { color: #005500; }
+.output-line.white  { color: #e0e0e0; }
+.output-line.cyan   { color: #00ffff; text-shadow: 0 0 6px rgba(0,255,255,0.3); }
+.output-line.blank  { min-height: 1.1em; }
+
+/* ── Clickable Files & Dirs ─────────────────────────── */
+.clickable-file {
+  color: var(--green);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.clickable-file:hover { color: var(--amber); text-shadow: 0 0 8px rgba(243,172,41,0.5); }
+
+.clickable-dir {
+  color: #00ffff;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+.clickable-dir:hover { color: var(--amber); }
+
+/* ── Input Row ──────────────────────────────────────── */
+#input-row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.2rem;
+  border-top: 1px solid #003300;
+  background: #050f05;
+  flex-shrink: 0;
+  gap: 0.4rem;
 }
 
-  
+#prompt-label {
+  color: var(--green-dim);
+  white-space: nowrap;
+  font-size: 13px;
+  flex-shrink: 0;
+  text-shadow: 0 0 4px rgba(0,255,65,0.3);
+}
+
+.prompt-user { color: var(--amber); }
+.prompt-host { color: var(--green); }
+.prompt-path { color: #00ffff; }
+
+#cmd-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--green);
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  caret-color: var(--green);
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+}
+
+#cmd-input::placeholder { color: #003300; }
+
+.block-cursor {
+  display: inline-block;
+  width: 9px;
+  height: 16px;
+  background: var(--green);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 1px;
+  box-shadow: 0 0 6px rgba(0,255,65,0.8);
+}
+
+/* ── Matrix Canvas ──────────────────────────────────── */
+#matrix-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  background: #000;
+}
+
+#matrix-exit-hint {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 201;
+  color: rgba(0,255,65,0.5);
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  display: none;
+  letter-spacing: 2px;
+}
+
+/* ── Snake Game ─────────────────────────────────────── */
+#snake-container {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#snake-canvas {
+  border: 1px solid var(--green);
+  box-shadow: 0 0 20px rgba(0,255,65,0.3);
+}
+
+.snake-ui {
+  font-family: 'VT323', monospace;
+  color: var(--green);
+  font-size: 20px;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 6px rgba(0,255,65,0.5);
+  letter-spacing: 1px;
+}
+
+/* ── Clock ──────────────────────────────────────────── */
+#time-display {
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  color: var(--green-dim);
+}
